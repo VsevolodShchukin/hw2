@@ -1,13 +1,8 @@
 """Проект по расчету количества лунных кратеров."""
-import typing
-
-matrix: typing.List = []
-craters = 0
 
 
-def search_crater(row: int, index: int) -> bool:
+def search_crater(matrix: list, row: int, index: int) -> bool:
     """Функция, которая проверяет значение в матрице на соответствие условиям кратера."""
-    global matrix
     index_count = len(matrix[0])
     row_count = len(matrix)
 
@@ -18,28 +13,34 @@ def search_crater(row: int, index: int) -> bool:
 
     if matrix[row][index] == 1:
         matrix[row][index] = 0
-        search_crater(row, index + 1)
-        search_crater(row + 1, index)
-        search_crater(row, index - 1)
-        search_crater(row - 1, index)
+        search_crater(matrix, row, index + 1)
+        search_crater(matrix, row + 1, index)
+        search_crater(matrix, row, index - 1)
+        search_crater(matrix, row - 1, index)
         return True
     return False
 
 
 def calculate(matrix: list) -> int:
     """Функция, которая отбирает 1 значение из матрицы для проверки на совпадение с условиями для кратера."""
-    global craters
+    craters = 0
     for row in range(len(matrix)):
         for index in range(len(matrix[row])):
-            if search_crater(row, index):
+            if search_crater(matrix, row, index):
                 craters = craters + 1
     print(craters)
     return craters
 
 
-with open("craters.txt", "r") as file:
-    for line in file:
-        matrix.append(list(map(lambda x: int(x), list(line.strip()))))
-    print(matrix)
+def main(file_name: str) -> int:
+    """Функция, открывающая файл и преобразующая его в матрицу."""
+    with open(file_name, "r") as file:
+        matrix = []
+        for line in file:
+            matrix.append(list(map(lambda x: int(x), list(line.strip()))))
+        print(matrix)
+        return calculate(matrix)
 
-calculate(matrix)
+
+if __name__ == "__main__":
+    main("craters.txt")
